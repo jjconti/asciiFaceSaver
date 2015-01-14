@@ -17,8 +17,6 @@ class asciiFacesView: ScreenSaverView {
     var lightColor       = NSColor(calibratedRed: 0.98, green: 0.98, blue: 0.98, alpha: 1);
     var darkColor        = NSColor(calibratedRed: 0.02, green: 0.02, blue: 0.02, alpha: 1);
     
-    
-    
     // Frame management
     var currentFrame     = CGFloat(0.0);
     var totalFramesInSet = CGFloat(200.0);
@@ -40,11 +38,11 @@ class asciiFacesView: ScreenSaverView {
     var faceFont         = NSFont(name: "HelveticaNeue", size: 124.0 );
     var fontStyle        = NSMutableParagraphStyle();
     
-    convenience init() {
+    convenience override init() {
         self.init(frame: CGRectZero, isPreview: false);
     }
     
-    init(frame: NSRect, isPreview: Bool) {
+    override init(frame: NSRect, isPreview: Bool) {
         
         // Get first face
         face = faceManager.getFace();
@@ -74,6 +72,10 @@ class asciiFacesView: ScreenSaverView {
         
         setAnimationTimeInterval( 1.0 / 30.0 );
     }
+
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
     
     override func drawRect(rect: NSRect) {
         super.drawRect(rect)
@@ -100,12 +102,11 @@ class asciiFacesView: ScreenSaverView {
         fillBG();
         
         faceColor = baseFaceColor.colorWithAlphaComponent( getTextAlpha() );
-        faceString = NSAttributedString(string: face, attributes: [
-            NSFontAttributeName: faceFont,
-            NSParagraphStyleAttributeName: fontStyle,
-            NSForegroundColorAttributeName: faceColor
-        ]);
-        
+        let nsMutableDictionary = NSMutableDictionary()
+        nsMutableDictionary[NSFontAttributeName] = faceFont
+        nsMutableDictionary[NSParagraphStyleAttributeName] = fontStyle
+        nsMutableDictionary[NSForegroundColorAttributeName] = faceColor
+        faceString = NSAttributedString(string: face, attributes: nsMutableDictionary);
         // Create rect in the center of the screen, based on the face string height.
         textRect = NSRect();
         textRect.size = NSMakeSize( size.width, faceString.size.height );
